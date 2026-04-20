@@ -1,0 +1,267 @@
+const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo "sfondo"
+const disegno = canvas.getContext("2d"); //andiamo a dichiarare la modaità per "disegnarer"
+
+// uccellino
+let uccellino = {
+    x: 50,
+    y: 150,
+    width: 30,
+    height: 30,
+    gravità: 0.5,
+    salto: -8,
+    velocità: 0
+};
+
+let tubi = []; //creiamo una lista(array) per andare a gestire tutti i tubi contemporaneamente 
+let frame = 0; //serve  per la creazione dei tubi ogni tot (ex. 100 frame)
+let pausa = false;
+let punteggio = 0;
+let conto_alla_rovescia = false;
+let riprendere_gioco = 0;
+let timer_riprendi = 0;
+
+// andiamo a definire la funzione che mostrerà l'uccellino a schermo 
+function disegna_uccellino() {
+    disegno.fillStyle = "yellow";
+    disegno.fillRect(uccellino.x, uccellino.y, uccellino.width, uccellino.height);
+}
+
+
+function aggiornamento_uccellino() {
+    uccellino.velocità += uccellino.gravità;
+    uccellino.y += uccellino.velocità;
+
+     // limite in basso
+    if (uccellino.y + uccellino.height > canvas.height) {
+        uccellino.y = canvas.height - uccellino.height;
+        uccellino.velocità = 0;
+    }
+
+    // limite in alto
+    if (uccellino.y < 0) {
+        uccellino.y = 0;
+        uccellino.velocità = 0;
+    }
+}
+
+function creazione_tubi() {
+    let spazio_tubi = 135; // spazio tra tubo sopra e tubo sotto
+    let altezza_tubo_superiore = Math.random() * 350;
+
+    tubi.push({ //andiamo ad aggiungere i tubi alla lista
+        x: canvas.width, //il tubo spunta da destra
+        tubo_superiore: altezza_tubo_superiore,
+        tubo_inferiore: canvas.height - altezza_tubo_superiore - spazio_tubi,
+        width: 50,
+        passaggio: false
+    });
+}
+
+//funzione che mostra i tubi a schermo
+function disegna_tubi() {
+    disegno.fillStyle = "green";
+
+tubi.forEach(tubo => {
+        // tubo di sopra
+        disegno.fillRect(tubo.x, 0, tubo.width, tubo.tubo_superiore);
+
+        // tubo di sotto
+        disegno.fillRect(
+            tubo.x,
+            canvas.height - tubo.tubo_inferiore,
+            tubo.width,
+            tubo.tubo_inferiore
+        );
+    });
+}
+
+function aggiornamento_tubi() {
+    tubi.forEach(tubo => {
+        tubo.x -= 2; // velocità di spostamento dei tubi
+    
+        if(!tubo.passaggio && tubo.x + tubo.width < uccellino.x){
+            punteggio ++; //se la "x" dell'uccellino supera la larghezza del tubo punteggio + 1
+            tubo.passaggio = true;
+        }
+    });
+
+    // rimuove tubi fuori schermo
+    tubi = tubi.filter(tubo => tubo.x + tubo.width > 0);
+}
+
+
+// salto con spazio
+document.addEventListener("keydown", function(e) {
+    if (e.code === "Space") {
+        uccellino.velocità = uccellino.salto;
+    }
+});
+
+
+// pausa con il tasto esc
+document.addEventListener("keydown", function(e) {
+    if (e.code === "Escape") {
+        if(conto_alla_rovescia)return;
+        
+        pausa = !pausa;
+        timer_riprendi = 0;
+        riprendere_gioco = 3;
+    }
+});
+
+
+// menù con tasto esc
+function disegna_menu() {
+
+    //rettangolo più grande
+    let w1 = canvas.width - 400;
+    let h1 = canvas.height - 190;
+
+    let x1 = (canvas.width - w1) / 2;
+    let y1 = (canvas.height - h1) / 2;
+
+    disegno.fillStyle = "rgba(0,0,0,0.5)";
+    disegno.fillRect(x1, y1, w1, h1);
+    
+    // rettangolo centrale
+    let w = 220;
+    let h = 140;
+    let x = canvas.width / 2 - w / 2;
+    let y = canvas.height / 2 - h / 2;
+
+    disegno.fillStyle = "white";
+    disegno.fillRect(x, y, w, h);
+
+    // bottone CONTINUA
+    disegno.fillStyle = "silver";
+    disegno.fillRect(x + 20, y + 20, 180, 40);
+
+    disegno.strokeStyle = "black"; //bordo bottone
+    disegno.strokeRect(x + 20, y + 20, 180,40);
+    
+    disegno.fillStyle = "black";
+    disegno.font = "18px Arial";
+    disegno.textAlign = "center";
+    disegno.textBaseline = "middle";
+    disegno.fillText("CONTINUA", x + 110, y + 40);
+
+    // bottone RICOMINCIA
+    disegno.fillStyle = "silver";
+    disegno.fillRect(x + 20, y + 80, 180, 40);
+
+    disegno.strokeStyle = "black";
+    disegno.strokeRect(x + 20, y + 80, 180, 40);
+    disegno.fillStyle = "black";
+    disegno.textAlign = "center";
+    disegno.textBaseline = "middle";
+    disegno.fillText("RICOMINCIA", x + 110, y + 100);
+}
+
+
+function gestione_mouse(e) {
+    if (!pausa) return;
+    let campo_di_gioco = canvas.getBoundingClientRect();
+    let mouseX = e.clientX - campo_di_gioco.left; //da sinistra
+    let mouseY = e.clientY - campo_di_gioco.top;  //da sopra
+
+    let x = canvas.width / 2 - 110;
+    let y = canvas.height / 2 - 70;
+
+    // controlla se sei sul bottone continua
+    if (
+        mouseX > x + 20 && mouseX < x + 200 &&
+        mouseY > y + 20 && mouseY < y + 60
+    ) {
+        conto_alla_rovescia = true;
+        riprendere_gioco = 3; //3 secondi 
+        timer_riprendi = 0;
+        pausa = false;
+    }
+
+    // controlla se sei sul bottone ricomincia 
+    if (
+        mouseX > x + 20 && mouseX < x + 200 &&
+        mouseY > y + 80 && mouseY < y + 120
+    ) {
+        uccellino.y = 150;
+        uccellino.velocità = 0;
+        tubi = []; //si azzera tutto
+        frame = 0;
+        pausa = false;
+        punteggio = 0;
+    }
+}
+
+//evento del "click" del mouse
+canvas.addEventListener("click", gestione_mouse);
+
+
+//funziona che fa partire il game
+function gameLoop() {
+    disegno.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (pausa) {
+    disegna_menu();
+    requestAnimationFrame(gameLoop);
+    return;
+    }
+
+    if(conto_alla_rovescia){
+      
+       timer_riprendi ++;
+
+        if(timer_riprendi % 60 === 0){
+            riprendere_gioco--;
+            timer_riprendi = 0;
+        }
+        if(riprendere_gioco <= 0){
+            conto_alla_rovescia = false;
+            riprendere_gioco = 3;
+            timer_riprendi = 0;
+        }
+        
+      }else{
+            frame++;
+            
+        // crea un nuovo tubo in base ai frame
+        if (frame % 100 === 0) {
+            creazione_tubi();
+            }
+    aggiornamento_uccellino();
+    aggiornamento_tubi();
+   
+    }
+
+    disegna_uccellino();
+    disegna_tubi();
+
+    let x = 90;
+    let y = 20;
+    let w = 170;
+    let h = 35;
+    
+    disegno.fillStyle = "rgba(0, 0, 0, 0.3)";
+    disegno.fillRect(x, y, w, h);
+
+    disegno.textAlign ="center";
+    disegno.textBaseline = "middle";
+    disegno.fillStyle = "white";
+    disegno.font = "20px Arial";
+    disegno.fillText("Punteggio: " + punteggio, x + w / 2, y + h / 2);
+   
+    if(conto_alla_rovescia){
+        disegno.fillStyle = "rgba(0, 0, 0, 0.2)";
+        disegno.fillRect(0, 0, canvas.width, canvas.height);
+        
+        disegno.fillStyle = "white";
+        disegno.font = "50px Arial";
+        disegno.textAlign = "center";
+       
+        disegno.fillText(riprendere_gioco, canvas.width / 2, canvas.height / 2);
+    }
+    
+    requestAnimationFrame(gameLoop);
+}
+
+
+gameLoop();
