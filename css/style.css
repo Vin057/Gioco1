@@ -20,49 +20,24 @@ body {
     display: block; /* fisso */
 }
 
-#produttore1{
-    position: absolute;
-    top: 513px;
-    left: 15px;
-    
+.produttori1 {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+
+}
+
+.produttori {
     background: aqua;
     border: 3px solid black;
 
-    padding: 8px 12px;
     font-family: Arial;
     font-size: 16px;
-
-    display: block;
 }
 
-#produttore2{
-    position: absolute;
-    top: 550px;
-    left: 15px;
-    width: 122px;
-    
-    background: aqua;
-    border: 3px solid black;
-
+.produttori th,
+.produttori td {
+    border: 2px solid black;
     padding: 8px 12px;
-    font-family: Arial;
-    font-size: 16px;
-
-    display: block;
-}
-
-#produttore{
-    position: absolute;
-    top: 476px;
-    left: 15px;
-    width: 122px;
-    
-    background: deepskyblue;
-    border: 3px solid black;
-
-    padding: 8px 12px;
-    font-family: Arial;
-    font-size: 16px;
-
-    display: block;
+    text-align: center;
 }

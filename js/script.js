@@ -19,6 +19,7 @@ let punteggio = 0;
 let conto_alla_rovescia = false;
 let riprendere_gioco = 0;
 let timer_riprendi = 0;
+let gameOver = false;
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -109,6 +110,41 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
+//disegna il gameover
+function disegna_game_over() {
+    // sfondo scuro
+    disegno.fillStyle = "rgba(0,0,0,0.5)";
+    disegno.fillRect(0, 0, canvas.width, canvas.height);
+
+    // box centrale
+    let w = 250;
+    let h = 150;
+    let x = canvas.width / 2 - w / 2;
+    let y = canvas.height / 2 - h / 2;
+
+    disegno.fillStyle = "white";
+    disegno.fillRect(x, y, w, h);
+
+    // testo
+    disegno.fillStyle = "black";
+    disegno.font = "25px Arial";
+    disegno.textAlign = "center";
+    disegno.fillText("GAME OVER", canvas.width / 2, y + 40);
+
+    disegno.font = "18px Arial";
+    disegno.fillText("Punteggio: " + punteggio, canvas.width / 2, y + 75);
+
+    // bottone restart
+    disegno.fillStyle = "silver";
+    disegno.fillRect(x + 35, y + 95, 180, 40);
+
+    disegno.strokeStyle = "black";
+    disegno.strokeRect(x + 35, y + 95, 180, 40);
+
+    disegno.fillStyle = "black";
+    disegno.fillText("RIPROVA", canvas.width / 2, y + 115);
+}
+
 
 // menù con tasto esc
 function disegna_menu() {
@@ -159,8 +195,34 @@ function disegna_menu() {
 
 
 function gestione_mouse(e) {
+    //gestione del click per il game over
+    if (gameOver) {
+        let rect = canvas.getBoundingClientRect();//prende la posizione del mouse all'interno della finestra
+        let mouseX = e.clientX - rect.left;
+        let mouseY = e.clientY - rect.top;
+
+        let x = canvas.width / 2 - 125;
+        let y = canvas.height / 2 - 75;
+
+        // bottone riprova
+        if (
+            mouseX > x + 35 && mouseX < x + 215 &&
+            mouseY > y + 95 && mouseY < y + 135
+        ) {
+            // reset gioco
+            uccellino.y = 150;
+            uccellino.velocità = 0;
+            tubi = [];
+            frame = 0;
+            punteggio = 0;
+            gameOver = false;
+        }
+
+        return;
+    }
+    
     if (!pausa) return;
-    let campo_di_gioco = canvas.getBoundingClientRect();
+    let campo_di_gioco = canvas.getBoundingClientRect(); //prende la posizione del mouse all'interno della finestra
     let mouseX = e.clientX - campo_di_gioco.left; //da sinistra
     let mouseY = e.clientY - campo_di_gioco.top;  //da sopra
 
@@ -196,6 +258,28 @@ function gestione_mouse(e) {
 canvas.addEventListener("click", gestione_mouse);
 
 
+//collisioni
+function collisioni(uccellino,tubo){
+    //collisioni con tubo superiore
+    if(
+        uccellino.x < tubo.x + tubo.width &&
+        uccellino.x + uccellino.width > tubo.x &&
+        uccellino.y < tubo.tubo_superiore
+    ){
+        return true;
+    }
+    //collisioni con tubo inferiore
+    if(
+        uccellino.x < tubo.x + tubo.width &&
+        uccellino.x + uccellino.width > tubo.x &&
+        uccellino.y + uccellino.height > canvas.height - tubo.tubo_inferiore
+    ){
+        return true;
+    }
+    return false;
+}
+
+
 //funziona che fa partire il game
 function gameLoop() {
     disegno.clearRect(0, 0, canvas.width, canvas.height);
@@ -206,6 +290,11 @@ function gameLoop() {
     return;
     }
 
+    if (gameOver) {
+    disegna_game_over();
+    requestAnimationFrame(gameLoop);
+    return;
+}
     if(conto_alla_rovescia){
       
        timer_riprendi ++;
@@ -230,6 +319,11 @@ function gameLoop() {
     aggiornamento_uccellino();
     aggiornamento_tubi();
    
+    for (let tubo of tubi) {
+        if (collisioni(uccellino, tubo)) {
+            gameOver = true;
+            }
+        }
     }
 
     disegna_uccellino();
