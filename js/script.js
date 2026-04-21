@@ -20,7 +20,11 @@ let conto_alla_rovescia = false;
 let riprendere_gioco = 0;
 let timer_riprendi = 0;
 let gameOver = false;
-
+let spriteTubo = new Image();
+spriteTubo.src ="img/Sprites_tubi1.png";
+let margine = 65;
+let spriteTuboSu = new Image();
+spriteTuboSu.src = "img/Sprites_tubiSu.png";
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
     disegno.fillStyle = "yellow";
@@ -53,7 +57,7 @@ function creazione_tubi() {
         x: canvas.width, //il tubo spunta da destra
         tubo_superiore: altezza_tubo_superiore,
         tubo_inferiore: canvas.height - altezza_tubo_superiore - spazio_tubi,
-        width: 50,
+        width: 150,
         passaggio: false
     });
 }
@@ -62,12 +66,26 @@ function creazione_tubi() {
 function disegna_tubi() {
     disegno.fillStyle = "green";
 
-tubi.forEach(tubo => {
-        // tubo di sopra
-        disegno.fillRect(tubo.x, 0, tubo.width, tubo.tubo_superiore);
-
+    tubi.forEach(tubo => {
+       
+        // tubo di sopra  
+        disegno.drawImage(
+            spriteTuboSu,
+            0, 0,
+            spriteTuboSu.width,
+            spriteTuboSu.height,
+            tubo.x,
+            0,
+            tubo.width,
+            tubo.tubo_superiore
+        );
+        
         // tubo di sotto
-        disegno.fillRect(
+        disegno.drawImage(
+            spriteTubo,
+            0, 0,
+            spriteTubo.width,
+            spriteTubo.height,
             tubo.x,
             canvas.height - tubo.tubo_inferiore,
             tubo.width,
@@ -259,23 +277,29 @@ canvas.addEventListener("click", gestione_mouse);
 
 
 //collisioni
-function collisioni(uccellino,tubo){
-    //collisioni con tubo superiore
-    if(
-        uccellino.x < tubo.x + tubo.width &&
-        uccellino.x + uccellino.width > tubo.x &&
+function collisioni(uccellino, tubo) {
+
+    let hitboxX = tubo.x + margine;
+    let hitboxWidth = tubo.width - margine * 2;
+
+    // collisioni con il tubo di sopra
+    if (
+        uccellino.x < hitboxX + hitboxWidth &&
+        uccellino.x + uccellino.width > hitboxX &&
         uccellino.y < tubo.tubo_superiore
-    ){
+    ) {
         return true;
     }
-    //collisioni con tubo inferiore
-    if(
-        uccellino.x < tubo.x + tubo.width &&
-        uccellino.x + uccellino.width > tubo.x &&
+
+    // collisioni con il tubo di sotto
+    if (
+        uccellino.x < hitboxX + hitboxWidth &&
+        uccellino.x + uccellino.width > hitboxX &&
         uccellino.y + uccellino.height > canvas.height - tubo.tubo_inferiore
-    ){
+    ) {
         return true;
     }
+
     return false;
 }
 
