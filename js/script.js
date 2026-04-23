@@ -1,15 +1,21 @@
 const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo "sfondo"
 const disegno = canvas.getContext("2d"); //andiamo a dichiarare la modaità per "disegnarer"
 
+let spriteUccellino = new Image();
+spriteUccellino.src = "img/Sprites_Uccellino3.png";
 // uccellino
 let uccellino = {
     x: 50,
     y: 150,
-    width: 30,
-    height: 30,
+    width: 43, //hitbox
+    height: 34, //hitbox
     gravità: 0.5,
     salto: -8,
-    velocità: 0
+    velocità: 0,
+    spriteWidth: 85, // dimendioni di grafica
+    spriteHeight: 85, // dimendioni di grafica
+    offsetX: 16,
+    offsetY: 20
 };
 
 let tubi = []; //creiamo una lista(array) per andare a gestire tutti i tubi contemporaneamente 
@@ -22,13 +28,20 @@ let timer_riprendi = 0;
 let gameOver = false;
 let spriteTubo = new Image();
 spriteTubo.src ="img/Sprites_tubi1.png";
-let margine = 65;
+let margine = 62;
 let spriteTuboSu = new Image();
 spriteTuboSu.src = "img/Sprites_tubiSu.png";
+
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
     disegno.fillStyle = "yellow";
-    disegno.fillRect(uccellino.x, uccellino.y, uccellino.width, uccellino.height);
+    disegno.drawImage(
+        spriteUccellino,
+        uccellino.x - uccellino.offsetX,
+        uccellino.y - uccellino.offsetY,
+        uccellino.spriteWidth,
+        uccellino.spriteHeight
+    );
 }
 
 
@@ -351,6 +364,16 @@ function gameLoop() {
     }
 
     disegna_uccellino();
+    
+    /*
+    disegno.strokeStyle = "red";
+    disegno.strokeRect(
+    uccellino.x,                      //  HITBOX UCCELLINO
+    uccellino.y,
+    uccellino.width,
+    uccellino.height
+);
+    */
     disegna_tubi();
 
     let x = 90;
