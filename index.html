@@ -23,7 +23,7 @@
 <body>
     
     <canvas id="gameCanvas" width="800" height="590"></canvas>
-    <div id="rettangolo">PAUSA (ESC)</div>
+    <div class="rettangolo">PAUSA (ESC)</div>
    
     <div class="produttori1">
         <table border="1px">
@@ -39,6 +39,15 @@
         </table>
     </div>
      
+    <div id="menu" class="overlay nascosto">
+        <div class="menu-box">
+
+            <div class="pausa">PAUSA</div>
+            <button class="btn continua">CONTINUA</button>
+            <button class="btn restart">RICOMINCIA</button>
+
+        </div>
+    </div>
     <script src="js/script.js"></script>
 </body>
 </html>

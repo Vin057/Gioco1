@@ -1,5 +1,9 @@
 const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo "sfondo" 
 const disegno = canvas.getContext("2d"); //andiamo a dichiarare la modaità per "disegnarer"
+const pausa1 = document.getElementById("pausa");
+const menu = document.getElementById("menu");
+const continua = document.querySelector(".continua");
+const restart = document.querySelector(".restart");
 
 let spriteUccellino = new Image();
 spriteUccellino.src = "img/Sprites_Uccellino3.png";
@@ -128,7 +132,7 @@ function aggiornamento_tubi() {
 function creazione_nuvole_grandi(){
     nuvole_grandi.push({
         x: canvas.width + 50,
-        y: Math.random() * 250,
+        y: Math.random() * 350,
         velocità: 1
     });
 }
@@ -178,22 +182,44 @@ function disegna_nuvole_grande(){
 
 // salto con spazio
 document.addEventListener("keydown", function(e) {
-    if (e.code === "Space") {
+    if (e.code === "Space"&& !pausa && !gameOver) {
         uccellino.velocità = uccellino.salto;
     }
 });
 
+continua.onclick = () => {
+    conto_alla_rovescia = true;
+    riprendere_gioco = 3;
+    timer_riprendi = 0;
+    pausa = false;
+    menu.classList.add("nascosto");
+};
+
+restart.onclick = () => {
+    uccellino.y = 150;
+    uccellino.velocità = 0;
+    tubi = [];
+    frame = 0;
+    punteggio = 0;
+    pausa = false;
+    nuvole_grandi = [];
+    menu.classList.add("nascosto");
+};
 
 // pausa con il tasto esc
 document.addEventListener("keydown", function(e) {
     if (e.code === "Escape") {
-        if(conto_alla_rovescia)return;
-        
+        if (conto_alla_rovescia) return;
+
         pausa = !pausa;
-        timer_riprendi = 0;
-        riprendere_gioco = 3;
+
+        if (pausa) {
+            menu.classList.remove("nascosto");
+        } else {
+            menu.classList.add("nascosto");
+        }
     }
-});
+});;
 
 //disegna il gameover
 function disegna_game_over() {
@@ -231,54 +257,6 @@ function disegna_game_over() {
 }
 
 
-// menù con tasto esc
-function disegna_menu() {
-
-    //rettangolo più grande
-    let w1 = canvas.width - 400;
-    let h1 = canvas.height - 190;
-
-    let x1 = (canvas.width - w1) / 2;
-    let y1 = (canvas.height - h1) / 2;
-
-    disegno.fillStyle = "rgba(0,0,0,0.5)";
-    disegno.fillRect(x1, y1, w1, h1);
-    
-    // rettangolo centrale
-    let w = 220;
-    let h = 140;
-    let x = canvas.width / 2 - w / 2;
-    let y = canvas.height / 2 - h / 2;
-
-    disegno.fillStyle = "white";
-    disegno.fillRect(x, y, w, h);
-
-    // bottone CONTINUA
-    disegno.fillStyle = "silver";
-    disegno.fillRect(x + 20, y + 20, 180, 40);
-
-    disegno.strokeStyle = "black"; //bordo bottone
-    disegno.strokeRect(x + 20, y + 20, 180,40);
-    
-    disegno.fillStyle = "black";
-    disegno.font = "18px Arial";
-    disegno.textAlign = "center";
-    disegno.textBaseline = "middle";
-    disegno.fillText("CONTINUA", x + 110, y + 40);
-
-    // bottone RICOMINCIA
-    disegno.fillStyle = "silver";
-    disegno.fillRect(x + 20, y + 80, 180, 40);
-
-    disegno.strokeStyle = "black";
-    disegno.strokeRect(x + 20, y + 80, 180, 40);
-    disegno.fillStyle = "black";
-    disegno.textAlign = "center";
-    disegno.textBaseline = "middle";
-    disegno.fillText("RICOMINCIA", x + 110, y + 100);
-}
-
-
 function gestione_mouse(e) {
     //gestione del click per il game over
     if (gameOver) {
@@ -307,37 +285,6 @@ function gestione_mouse(e) {
     }
     
     if (!pausa) return;
-    let campo_di_gioco = canvas.getBoundingClientRect(); //prende la posizione del mouse all'interno della finestra
-    let mouseX = e.clientX - campo_di_gioco.left; //da sinistra
-    let mouseY = e.clientY - campo_di_gioco.top;  //da sopra
-
-    let x = canvas.width / 2 - 110;
-    let y = canvas.height / 2 - 70;
-
-    // controlla se sei sul bottone continua
-    if (
-        mouseX > x + 20 && mouseX < x + 200 &&
-        mouseY > y + 20 && mouseY < y + 60
-    ) {
-        conto_alla_rovescia = true;
-        riprendere_gioco = 3; //3 secondi 
-        timer_riprendi = 0;
-        pausa = false;
-    }
-
-    // controlla se sei sul bottone ricomincia 
-    if (
-        mouseX > x + 20 && mouseX < x + 200 &&
-        mouseY > y + 80 && mouseY < y + 120
-    ) {
-        uccellino.y = 150;
-        uccellino.velocità = 0;
-        tubi = []; //si azzera tutto
-        frame = 0;
-        pausa = false;
-        punteggio = 0;
-        nuvole_grandi = [];
-    }
 }
 
 //evento del "click" del mouse
@@ -377,7 +324,6 @@ function gameLoop() {
     disegno.clearRect(0, 0, canvas.width, canvas.height);
 
     if (pausa) {
-    disegna_menu();
     requestAnimationFrame(gameLoop);
     return;
     }
@@ -400,7 +346,7 @@ function gameLoop() {
             riprendere_gioco = 3;
             timer_riprendi = 0;
         }
-        
+        aggiornamento_uccellino();
       }else{
             frame++;
             
@@ -461,7 +407,14 @@ function gameLoop() {
         disegno.font = "50px Arial";
         disegno.textAlign = "center";
        
-        disegno.fillText(riprendere_gioco, canvas.width / 2, canvas.height / 2);
+        if(riprendere_gioco === 3){
+            disegno.fillStyle="white";
+        }if(riprendere_gioco === 2){
+            disegno.fillStyle="orange";
+        }if(riprendere_gioco === 1){
+            disegno.fillStyle="red";
+        }
+        disegno.fillText("Il gioco riprende tra... " + riprendere_gioco, canvas.width / 2, canvas.height / 2);
     }
     
     requestAnimationFrame(gameLoop);
