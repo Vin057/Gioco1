@@ -14,7 +14,7 @@ let uccellino = {
     width: 43, //hitbox
     height: 34, //hitbox
     gravità: 0.5,
-    salto: -8,
+    salto: -7.7,
     velocità: 0,
     spriteWidth: 85, // dimendioni di grafica
     spriteHeight: 85, // dimendioni di grafica
@@ -22,6 +22,7 @@ let uccellino = {
     offsetY: 20
 };
 
+let record = 0;
 let tubi = []; //creiamo una lista(array) per andare a gestire tutti i tubi contemporaneamente 
 let frame = 0; //serve  per la creazione dei tubi ogni tot (ex. 100 frame)
 let pausa = false;
@@ -121,6 +122,10 @@ function aggiornamento_tubi() {
         if(!tubo.passaggio && tubo.x + tubo.width < uccellino.x){
             punteggio ++; //se la "x" dell'uccellino supera la larghezza del tubo punteggio + 1
             tubo.passaggio = true;
+        
+            if (punteggio > record) { // serve ad aggiornare il record in live
+                record = punteggio;
+            }
         }
     });
 
@@ -318,6 +323,22 @@ function collisioni(uccellino, tubo) {
     return false;
 }
 
+//record
+function disegna_record(){
+    let x = 590;
+    let y = 20;
+    let w = 170;
+    let h = 35;
+    
+    disegno.fillStyle = "rgba(0, 0, 0, 0.3)";
+    disegno.fillRect(x, y, w, h);
+
+    disegno.textAlign ="center";
+    disegno.textBaseline = "middle";
+    disegno.fillStyle = "white";
+    disegno.font = "20px Arial";
+    disegno.fillText("Record: " + record, x + w / 2, y + h / 2);
+}
 
 //funziona che fa partire il game
 function gameLoop() {
@@ -367,6 +388,10 @@ function gameLoop() {
     for (let tubo of tubi) {
         if (collisioni(uccellino, tubo)) {
             gameOver = true;
+            
+            if(punteggio > record){
+                record = punteggio;
+            }
             }
         }
     }
@@ -385,6 +410,7 @@ function gameLoop() {
     */
     disegna_tubi();
 
+    // punteggio
     let x = 90;
     let y = 20;
     let w = 170;
@@ -398,7 +424,9 @@ function gameLoop() {
     disegno.fillStyle = "white";
     disegno.font = "20px Arial";
     disegno.fillText("Punteggio: " + punteggio, x + w / 2, y + h / 2);
-   
+
+    disegna_record();
+    
     if(conto_alla_rovescia){
         disegno.fillStyle = "rgba(0, 0, 0, 0.2)";
         disegno.fillRect(0, 0, canvas.width, canvas.height);
