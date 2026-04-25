@@ -41,3 +41,70 @@ body {
     padding: 8px 12px;
     text-align: center;
 }
+
+.nuvola_grande{
+    width: 60px;
+    height: 40px;
+    background: white;
+    border-radius: 50px;
+    position: absolute;
+    z-index: -1;
+    box-shadow: /* spostamento sx-dx; spostamento su-giù; sfocatura */
+        30px 0px 0 white,
+        120px -20px 0 white,
+        30px -20px 0 white,
+        70px -40px 0 white, 
+        150px 0px 0 white,
+        100px 0px 0 white,
+        120px 0px 0 white,
+        70px -10px 0 white,
+        60px 0px 0 white,
+        80px 0px 0 white;
+    }
+
+.nuvola_piccola{
+    width: 50px;
+    height: 23px;
+    background: white;
+    border-radius: 50px;
+    position: absolute;
+    top: 100px;
+    left: 300px;
+    z-index: -1;
+    box-shadow: /* spostamento sx-dx; spostamento su-giù; sfocatura */
+        30px 0px 0 orange,
+        90px -20px 0 purple, 
+        20px -20px 0 pink,
+        55px -40px 0 grey, 
+    /*  150px 0px 0 green, */
+        110px 0px 0 red,
+        65px -20px 0 gold,
+        60px 0px 0 yellow,
+        80px 0px 0 blue;
+    }
+
+
+
+/*
+.nuvola::before,
+.nuvola::after{
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+.nuvola::before{
+    width: 60px;
+    height: 60px;
+    top: -30px;
+    left: 20px;
+}
+
+.nuvola::after{
+    width: 80px;
+    height: 80px;
+    top: -40px;
+    right: 15px;
+}
+*/

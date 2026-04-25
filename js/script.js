@@ -1,4 +1,4 @@
-const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo "sfondo"
+const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo "sfondo" 
 const disegno = canvas.getContext("2d"); //andiamo a dichiarare la modaità per "disegnarer"
 
 let spriteUccellino = new Image();
@@ -31,6 +31,9 @@ spriteTubo.src ="img/Sprites_tubi1.png";
 let margine = 62;
 let spriteTuboSu = new Image();
 spriteTuboSu.src = "img/Sprites_tubiSu.png";
+let nuvole_grandi = [];
+let nuvole_piccole = [];
+
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -121,6 +124,57 @@ function aggiornamento_tubi() {
     tubi = tubi.filter(tubo => tubo.x + tubo.width > 0);
 }
 
+//funzione per creare nuvole grandi
+function creazione_nuvole_grandi(){
+    nuvole_grandi.push({
+        x: canvas.width + 50,
+        y: Math.random() * 250,
+        velocità: 1
+    });
+}
+
+//funzione per il movimento delle nuvole grandi
+function aggiornamento_nuvole_grandi(){
+    nuvole_grandi.forEach(nuvola => {
+        nuvola.x -= nuvola.velocità;
+    });
+
+    // rimuove quando escono dal canvas
+    nuvole_grandi = nuvole_grandi.filter(nuvola => {
+        let fuoriCanvas = nuvola.x + 100 < 0;
+
+        return !fuoriCanvas;
+    });
+}
+
+//funzione per disegnare le nuvole grandi 
+function disegno_nuvola_grande(x, y, scala = 1.5) {
+    disegno.save();
+
+    disegno.globalAlpha = 0.8;
+    disegno.fillStyle = "white";
+    disegno.shadowColor = "rgba(0,0,0,0.1)";
+    disegno.shadowBlur = 10;
+
+    // corpo nuvola (cerchi sovrapposti)
+    disegno.beginPath();
+
+    disegno.arc(x, y, 20 * scala, 0, Math.PI * 2);
+    disegno.arc(x + 20 * scala, y - 10 * scala, 25 * scala, 0, Math.PI * 2);
+    disegno.arc(x + 45 * scala, y, 22 * scala, 0, Math.PI * 2);
+    disegno.arc(x + 20 * scala, y + 10 * scala, 20 * scala, 0, Math.PI * 2);
+
+    disegno.fill();
+    disegno.closePath();
+    
+    disegno.restore();
+}
+
+function disegna_nuvole_grande(){
+    nuvole_grandi.forEach(nuvola => {
+        disegno_nuvola_grande(nuvola.x, nuvola.y, nuvola.scala);
+    });
+}
 
 // salto con spazio
 document.addEventListener("keydown", function(e) {
@@ -247,8 +301,8 @@ function gestione_mouse(e) {
             frame = 0;
             punteggio = 0;
             gameOver = false;
+            nuvole_grandi = [];
         }
-
         return;
     }
     
@@ -282,6 +336,7 @@ function gestione_mouse(e) {
         frame = 0;
         pausa = false;
         punteggio = 0;
+        nuvole_grandi = [];
     }
 }
 
@@ -353,6 +408,13 @@ function gameLoop() {
         if (frame % 100 === 0) {
             creazione_tubi();
             }
+        
+        // crea una nuvola in base ai frame
+         if(frame % 240 === 0){
+            creazione_nuvole_grandi();
+        }
+    
+    aggiornamento_nuvole_grandi();
     aggiornamento_uccellino();
     aggiornamento_tubi();
    
@@ -363,6 +425,7 @@ function gameLoop() {
         }
     }
 
+    disegna_nuvole_grande();
     disegna_uccellino();
     
     /*
