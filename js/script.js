@@ -1,9 +1,9 @@
 const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo "sfondo" 
 const disegno = canvas.getContext("2d"); //andiamo a dichiarare la modaità per "disegnarer"
 const pausa1 = document.getElementById("pausa");
-const menu = document.getElementById("menu");
-const continua = document.querySelector(".continua");
-const restart = document.querySelector(".restart");
+const menu = document.getElementById("menu"); 
+const continua = document.querySelector(".continua"); //document.querySelector serve per prendere un elemento da html
+const restart = document.querySelectorAll(".restart");
 
 let spriteUccellino = new Image();
 spriteUccellino.src = "img/Sprites_Uccellino3.png";
@@ -37,7 +37,6 @@ let margine = 62;
 let spriteTuboSu = new Image();
 spriteTuboSu.src = "img/Sprites_tubiSu.png";
 let nuvole_grandi = [];
-let nuvole_piccole = [];
 
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
@@ -87,7 +86,8 @@ function creazione_tubi() {
 function disegna_tubi() {
     disegno.fillStyle = "green";
 
-    tubi.forEach(tubo => {
+    tubi.forEach(tubo => { //forEach ripete per tutti gli elementi della lista (Array)
+                           //=> si chiama funzione freccia, serve per accorciare 
        
         // tubo di sopra  
         disegno.drawImage(
@@ -138,7 +138,7 @@ function creazione_nuvole_grandi(){
     nuvole_grandi.push({
         x: canvas.width + 50,
         y: Math.random() * 350,
-        velocità: 1
+        velocità: 1.3
     });
 }
 
@@ -173,7 +173,7 @@ function disegno_nuvola_grande(x, y, scala = 1.5) {
     disegno.arc(x + 45 * scala, y, 22 * scala, 0, Math.PI * 2);
     disegno.arc(x + 20 * scala, y + 10 * scala, 20 * scala, 0, Math.PI * 2);
 
-    disegno.fill();
+    disegno.fill(); //colora tutto l'interno
     disegno.closePath();
     
     disegno.restore();
@@ -200,17 +200,24 @@ continua.onclick = () => {
     menu.classList.add("nascosto");
 };
 
-restart.onclick = () => {
-    uccellino.y = 150;
-    uccellino.velocità = 0;
-    tubi = [];
-    frame = 0;
-    punteggio = 0;
-    pausa = false;
-    nuvole_grandi = [];
-    menu.classList.add("nascosto");
-};
+restart.forEach(btn => {
+    btn.onclick = () => {
+        uccellino.y = 150;
+        uccellino.velocità = 0;
+        tubi = [];
+        frame = 0;
+        punteggio = 0;
+        pausa = false;
+        nuvole_grandi = [];
+        gameOver = false;
+        menu.classList.add("nascosto");
 
+        const gameover1 = document.getElementById("gameover")
+        if(gameover1){
+            gameover1.classList.add("nascosto");
+        }
+    };
+});
 // pausa con il tasto esc
 document.addEventListener("keydown", function(e) {
     if (e.code === "Escape") {
@@ -224,76 +231,7 @@ document.addEventListener("keydown", function(e) {
             menu.classList.add("nascosto");
         }
     }
-});;
-
-//disegna il gameover
-function disegna_game_over() {
-    // sfondo scuro
-    disegno.fillStyle = "rgba(0,0,0,0.5)";
-    disegno.fillRect(0, 0, canvas.width, canvas.height);
-
-    // box centrale
-    let w = 250;
-    let h = 150;
-    let x = canvas.width / 2 - w / 2;
-    let y = canvas.height / 2 - h / 2;
-
-    disegno.fillStyle = "white";
-    disegno.fillRect(x, y, w, h);
-
-    // testo
-    disegno.fillStyle = "black";
-    disegno.font = "25px Arial";
-    disegno.textAlign = "center";
-    disegno.fillText("GAME OVER", canvas.width / 2, y + 40);
-
-    disegno.font = "18px Arial";
-    disegno.fillText("Punteggio: " + punteggio, canvas.width / 2, y + 75);
-
-    // bottone restart
-    disegno.fillStyle = "silver";
-    disegno.fillRect(x + 35, y + 95, 180, 40);
-
-    disegno.strokeStyle = "black";
-    disegno.strokeRect(x + 35, y + 95, 180, 40);
-
-    disegno.fillStyle = "black";
-    disegno.fillText("RIPROVA", canvas.width / 2, y + 115);
-}
-
-
-function gestione_mouse(e) {
-    //gestione del click per il game over
-    if (gameOver) {
-        let rect = canvas.getBoundingClientRect();//prende la posizione del mouse all'interno della finestra
-        let mouseX = e.clientX - rect.left;
-        let mouseY = e.clientY - rect.top;
-
-        let x = canvas.width / 2 - 125;
-        let y = canvas.height / 2 - 75;
-
-        // bottone riprova
-        if (
-            mouseX > x + 35 && mouseX < x + 215 &&
-            mouseY > y + 95 && mouseY < y + 135
-        ) {
-            // reset gioco
-            uccellino.y = 150;
-            uccellino.velocità = 0;
-            tubi = [];
-            frame = 0;
-            punteggio = 0;
-            gameOver = false;
-            nuvole_grandi = [];
-        }
-        return;
-    }
-    
-    if (!pausa) return;
-}
-
-//evento del "click" del mouse
-canvas.addEventListener("click", gestione_mouse);
+});
 
 
 //collisioni
@@ -350,7 +288,6 @@ function gameLoop() {
     }
 
     if (gameOver) {
-    disegna_game_over();
     requestAnimationFrame(gameLoop);
     return;
 }
@@ -388,6 +325,10 @@ function gameLoop() {
     for (let tubo of tubi) {
         if (collisioni(uccellino, tubo)) {
             gameOver = true;
+            
+            document.getElementById("gameover").classList.remove("nascosto");
+            document.getElementById("punteggio").innerText = "Punteggio " + punteggio;
+            document.getElementById("record").innerText = "Record " + record;
             
             if(punteggio > record){
                 record = punteggio;

@@ -1,7 +1,7 @@
 body {
     margin: 0;
     background: skyblue;
-    display: flex;
+    display: flex; /* serve per organizzare la pagina in maniera più semplice */
     justify-content: center;
 }
 
@@ -13,7 +13,7 @@ body {
     background: white;
     border: 3px solid black;
 
-    padding: 8px 12px;
+    padding: 8px 12px; /* spazio tra un elemento e un altro */
     font-family: Arial;
     font-size: 16px;
 
@@ -21,7 +21,7 @@ body {
 }
 
 .produttori1 {
-    position: fixed;
+    position: fixed; /* anche se scrolli l'elemento rimane lì*/
     bottom: 10px;
     left: 10px;
 
@@ -42,6 +42,7 @@ body {
     text-align: center;
 }
 
+/* 
 .nuvola_grande{
     width: 60px;
     height: 40px;
@@ -49,7 +50,7 @@ body {
     border-radius: 50px;
     position: absolute;
     z-index: -1;
-    box-shadow: /* spostamento sx-dx; spostamento su-giù; sfocatura */
+    box-shadow:  -spostamento sx-dx; spostamento su-giù; sfocatura-
         30px 0px 0 white,
         120px -20px 0 white,
         30px -20px 0 white,
@@ -62,7 +63,7 @@ body {
         80px 0px 0 white;
     }
 
-
+ */
 
 .overlay {
   position: fixed;
@@ -70,32 +71,56 @@ body {
   background: rgba(0, 0, 0, 0.5); /* rettangolo grande trasparente */
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* tutti gli elementi vengono messi al centro */
 }
 
+
+#GAME_OVER{
+    text-align: center;
+    color: red;
+    font-family: Arial;
+    font-size: 23px;
+}
+
+#punteggio{
+    text-align: center;
+    font-family: Arial;
+    font-size: 20px;
+    height: 15px;
+}
+
+#record{
+    text-align: center;
+    font-family: Arial;
+    font-size: 20px;
+    height: 15px;
+
+}
 .menu-box {
-  width: 220px;
-  height: 200px;
-  background: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px;
+    width: 220px;
+    height: auto;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px; /* angoli curvi */
+    border: 2px solid black;
 }
 
 .btn {
-  height: 40px;
-  background: silver;
-  border: 1px solid black;
-  cursor: pointer;
-  font-size: 18px;
-  transition: 0.2s;
+    height: 40px;
+    background: silver;
+    border: 1px solid black;
+    cursor: pointer; /* da cursore a puntatore */
+    font-size: 18px;
+    transition: 0.2s;/* cambio di "colore" se c'è il puntatore sopra*/
 }
 
 .btn:hover {
-  background: #ddd;
-  transform: scale(1.03);
+    background: #ddd;
+    transform: scale(1.03);
 }
 
 .nascosto{
