@@ -185,6 +185,15 @@ function disegna_nuvole_grande(){
     });
 }
 
+function salto(){
+    velocitaY = -7.7;
+}
+//mobile
+document.addEventListener("pointerdown", (e) =>{ //prende il click come input
+    e.preventDefault(); //serve per bloccare lo scroll
+    salto()
+});
+
 // salto con spazio
 document.addEventListener("keydown", function(e) {
     if (e.code === "Space"&& !pausa && !gameOver) {
@@ -304,7 +313,7 @@ function gameLoop() {
             riprendere_gioco = 3;
             timer_riprendi = 0;
         }
-        aggiornamento_uccellino();
+        uccellino.velocità = 0;
       }else{
             frame++;
             
@@ -388,6 +397,5 @@ function gameLoop() {
     
     requestAnimationFrame(gameLoop);
 }
-
 
 gameLoop();
