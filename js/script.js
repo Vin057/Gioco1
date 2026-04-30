@@ -186,8 +186,11 @@ function disegna_nuvole_grande(){
 }
 
 function salto(){
-    velocitaY = -7.7;
+       if (!pausa && !gameOver && !conto_alla_rovescia) {
+        uccellino.velocità = uccellino.salto;
+    }
 }
+
 //mobile
 document.addEventListener("pointerdown", (e) =>{ //prende il click come input
     e.preventDefault(); //serve per bloccare lo scroll
