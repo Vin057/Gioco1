@@ -1,7 +1,5 @@
 #gameCanvas{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
 }
 
 body {
@@ -9,6 +7,7 @@ body {
     background: skyblue;
     display: flex; /* serve per organizzare la pagina in maniera più semplice */
     justify-content: center;
+    align-items: center;  
 }
 
 .rettangolo{
@@ -140,8 +139,13 @@ body {
 }
 
 #erba{
-    position: fixed;
-    z-index: 5;
-    left: 230px;
-    bottom: 0px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.contenitore-gioco {
+    position: relative;
+    width: 800px;
 }
