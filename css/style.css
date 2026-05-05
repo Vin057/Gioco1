@@ -1,3 +1,9 @@
+#gameCanvas{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 body {
     margin: 0;
     background: skyblue;
@@ -131,4 +137,11 @@ body {
     font-family: Arial;
     text-align: center;
     font-size: 40px;
+}
+
+#erba{
+    position: fixed;
+    z-index: 5;
+    left: 230px;
+    bottom: 0px;
 }

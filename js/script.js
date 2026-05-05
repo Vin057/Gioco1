@@ -22,7 +22,7 @@ let uccellino = {
     offsetY: 20
 };
 
-let record = 0;
+let record = parseInt(localStorage.getItem("record")) || 0; //prende il record che inizialmente è una stringa e "parseInt" lo trasforma in intero
 let tubi = []; //creiamo una lista(array) per andare a gestire tutti i tubi contemporaneamente 
 let frame = 0; //serve  per la creazione dei tubi ogni tot (ex. 100 frame)
 let pausa = false;
@@ -37,7 +37,7 @@ let margine = 62;
 let spriteTuboSu = new Image();
 spriteTuboSu.src = "img/Sprites_tubiSu.png";
 let nuvole_grandi = [];
-
+let margine_fondo = 26;
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -57,8 +57,8 @@ function aggiornamento_uccellino() {
     uccellino.y += uccellino.velocità;
 
      // limite in basso
-    if (uccellino.y + uccellino.height > canvas.height) {
-        uccellino.y = canvas.height - uccellino.height;
+    if (uccellino.y + uccellino.height > canvas.height - margine_fondo) {
+        uccellino.y = canvas.height - margine_fondo - uccellino.height;
         uccellino.velocità = 0;
     }
 
@@ -125,6 +125,7 @@ function aggiornamento_tubi() {
         
             if (punteggio > record) { // serve ad aggiornare il record in live
                 record = punteggio;
+                localStorage.setItem("record", record);
             }
         }
     });
@@ -186,11 +187,8 @@ function disegna_nuvole_grande(){
 }
 
 function salto(){
-       if (!pausa && !gameOver && !conto_alla_rovescia) {
-        uccellino.velocità = uccellino.salto;
-    }
+    velocitaY = -7.7;
 }
-
 //mobile
 document.addEventListener("pointerdown", (e) =>{ //prende il click come input
     e.preventDefault(); //serve per bloccare lo scroll
@@ -344,6 +342,7 @@ function gameLoop() {
             
             if(punteggio > record){
                 record = punteggio;
+                localStorage.setItem("record", record);
             }
             }
         }
@@ -352,7 +351,7 @@ function gameLoop() {
     disegna_nuvole_grande();
     disegna_uccellino();
     
-    /*
+/*  
     disegno.strokeStyle = "red";
     disegno.strokeRect(
     uccellino.x,                      //  HITBOX UCCELLINO
