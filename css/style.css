@@ -8,6 +8,7 @@ body {
     display: flex; /* serve per organizzare la pagina in maniera più semplice */
     justify-content: center;
     align-items: center;  
+    height: 100vh;
 }
 
 .rettangolo{
