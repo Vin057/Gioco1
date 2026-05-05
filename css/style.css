@@ -1,14 +1,15 @@
 #gameCanvas{
     display: block;
+    background: skyblue;
 }
 
 body {
     margin: 0;
-    background: skyblue;
-    display: flex; /* serve per organizzare la pagina in maniera più semplice */
+    display: flex; /*serve per organizzare la pagina in maniera più semplice */
     justify-content: center;
-    align-items: center;  
-    height: 100vh;
+    align-items: center;
+    height: 100vh; /*occupa il 100% di altezza in altezza*/
+    overflow: hidden;
 }
 
 .rettangolo{
@@ -149,4 +150,16 @@ body {
 .contenitore-gioco {
     position: relative;
     width: 800px;
+    margin:auto; /*gestisce autonomamente lo spazio attorno a un elemento */
+}
+
+.sfondo {
+    position: fixed;
+    inset: 0; /* lo attacca a tutti i lati, sarebbe come "top: 0-right: 0-bottom: 0-left: 0;" */
+
+    background-image: url("../img/muro.webp");
+    background-repeat: repeat;
+    background-size: 55px 55px;
+
+    z-index: 0;
 }
