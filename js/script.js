@@ -4,6 +4,10 @@ const pausa1 = document.getElementById("pausa");
 const menu = document.getElementById("menu"); 
 const continua = document.querySelector(".continua"); //document.querySelector serve per prendere un elemento da html
 const restart = document.querySelectorAll(".restart");
+const bottone_iniziale = document.getElementById("inizio");
+const inizio = document.getElementById("schermata_inizio");
+const nome = document.getElementById("nome");
+const schermata = document.getElementById("sfondo_schermata_inizio");
 
 let spriteUccellino = new Image();
 spriteUccellino.src = "img/Sprites_Uccellino3.png";
@@ -38,6 +42,8 @@ let spriteTuboSu = new Image();
 spriteTuboSu.src = "img/Sprites_tubiSu.png";
 let nuvole_grandi = [];
 let margine_fondo = 26;
+let nomeGiocatore = "";
+let giocoAvviato = false;
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -187,10 +193,12 @@ function disegna_nuvole_grande(){
 }
 
 function salto(){
-    velocitaY = -7.7;
+    uccellino.velocità = uccellino.salto;
 }
 //mobile
 document.addEventListener("pointerdown", (e) =>{ //prende il click come input
+    if (!giocoAvviato) return;
+    
     e.preventDefault(); //serve per bloccare lo scroll
     salto()
 });
@@ -228,6 +236,20 @@ restart.forEach(btn => {
         }
     };
 });
+
+bottone_iniziale.onclick = () => {
+    nomeGiocatore = nome.value.trim();
+
+    if (nomeGiocatore === "") {
+        alert("Inserisci un nome!");
+        return;
+    }
+
+    inizio.style.display = "none"; // nasconde schermata iniziale
+    schermata.style.display = "none";
+    giocoAvviato = true;
+};
+
 // pausa con il tasto esc
 document.addEventListener("keydown", function(e) {
     if (e.code === "Escape") {
@@ -293,14 +315,19 @@ function gameLoop() {
     disegno.clearRect(0, 0, canvas.width, canvas.height);
 
     if (pausa) {
-    requestAnimationFrame(gameLoop);
-    return;
+        requestAnimationFrame(gameLoop);
+        return;
     }
 
+    if (!giocoAvviato) {
+        requestAnimationFrame(gameLoop);
+        return;
+    }
     if (gameOver) {
-    requestAnimationFrame(gameLoop);
-    return;
-}
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+
     if(conto_alla_rovescia){
       
        timer_riprendi ++;

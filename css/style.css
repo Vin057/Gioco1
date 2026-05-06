@@ -12,6 +12,127 @@ body {
     overflow: hidden;
 }
 
+#benvenuto {
+    color: yellow;
+    text-align: center;
+    margin: 0;
+
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%); /* centro orizzontale */
+}
+
+#sfondo_schermata_inizio {
+    position: fixed;
+    inset: 0; /* copre tutto lo schermo */
+    background-color: skyblue;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9;
+}
+
+#nome{
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%); /* centro orizzontale */
+
+    margin-top: 30px;
+    height: 20px;
+    width: 200px;
+}
+
+#salto{
+    background-color: rgb(180, 180, 180);
+    position: absolute;
+    bottom: 70px;
+    left: 10px;
+    font-size: 20px;
+
+    
+    border-radius: 10px;
+
+    width: 75px;
+    height: 30px;
+    text-align: center;
+}
+
+#space{
+    background-color: rgb(180, 180, 180);
+    position: absolute;
+    bottom: 70px;
+    left: 110px;
+    font-size: 20px;
+    
+    border-radius: 10px;
+    width: 75px;
+    height: 30px;
+    text-align: center;
+}
+
+#pausa{
+    background-color: rgb(180, 180, 180);
+    position: absolute;
+    bottom: 20px;
+    left: 10px;
+    font-size: 20px;
+    
+    border-radius: 10px;
+
+    width: 75px;
+    height: 30px;
+    text-align: center;
+}
+
+#esc{
+    background-color: rgb(180, 180, 180);
+    position: absolute;
+    bottom: 20px;
+    left: 110px;
+    font-size: 20px;
+    
+    border-radius: 10px;
+    width: 75px;
+    height: 30px;
+    text-align: center;
+}
+
+#inizio{
+    border: none;
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%); /* centro orizzontale */
+    
+    border-radius: 15px;
+
+    margin-top: 10px;
+    width: 150px;
+    height: 25px;
+    cursor: pointer; /* da cursore a puntatore */
+    font-size: 18px;
+    background-color: white;
+    transition: 0.2s;/* cambio di "colore" se c'è il puntatore sopra*/
+}
+
+#schermata_inizio {
+    position: relative;
+    background: rgba(114, 113, 113,0.8);
+
+    width: 500px;
+    height: 400px;
+
+    border: 2px solid black;
+    border-color: black;
+    border-radius: 13%;
+    padding-top: 20px;
+    z-index: 10;
+}
+
 .rettangolo{
     position: absolute;
     top: 15px;
