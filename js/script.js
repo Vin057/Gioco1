@@ -8,6 +8,7 @@ const bottone_iniziale = document.getElementById("inizio");
 const inizio = document.getElementById("schermata_inizio");
 const nome = document.getElementById("nome");
 const schermata = document.getElementById("sfondo_schermata_inizio");
+const erba = document.getElementById("erba");
 
 let spriteUccellino = new Image();
 spriteUccellino.src = "img/Sprites_Uccellino3.png";
@@ -220,6 +221,7 @@ continua.onclick = () => {
 
 restart.forEach(btn => {
     btn.onclick = () => {
+        erba.style.display = "block";
         uccellino.y = 150;
         uccellino.velocità = 0;
         tubi = [];
@@ -293,6 +295,23 @@ function collisioni(uccellino, tubo) {
     return false;
 }
 
+//nome
+function disegna_nome(){
+    let x = 325;
+    let y = 20;
+    let w = 190;
+    let h = 35;
+    
+    disegno.fillStyle = "rgba(0, 0, 0, 0.3)";
+    disegno.fillRect(x, y, w, h);
+
+    disegno.textAlign ="center";
+    disegno.textBaseline = "middle";
+    disegno.fillStyle = "white";
+    disegno.font = "20px Arial";
+    disegno.fillText("Nome utente: " + nomeGiocatore, x + w / 2, y + h / 2);
+}
+
 //record
 function disegna_record(){
     let x = 590;
@@ -363,6 +382,7 @@ function gameLoop() {
         if (collisioni(uccellino, tubo)) {
             gameOver = true;
             
+            erba.style.display = "none";
             document.getElementById("gameover").classList.remove("nascosto");
             document.getElementById("punteggio").innerText = "Punteggio " + punteggio;
             document.getElementById("record").innerText = "Record " + record;
@@ -390,7 +410,7 @@ function gameLoop() {
     disegna_tubi();
 
     // punteggio
-    let x = 90;
+    let x = 70;
     let y = 20;
     let w = 170;
     let h = 35;
@@ -405,7 +425,8 @@ function gameLoop() {
     disegno.fillText("Punteggio: " + punteggio, x + w / 2, y + h / 2);
 
     disegna_record();
-    
+    disegna_nome();
+
     if(conto_alla_rovescia){
         disegno.fillStyle = "rgba(0, 0, 0, 0.2)";
         disegno.fillRect(0, 0, canvas.width, canvas.height);
