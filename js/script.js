@@ -45,6 +45,8 @@ let nuvole_grandi = [];
 let margine_fondo = 26;
 let nomeGiocatore = "";
 let giocoAvviato = false;
+let morto = false;
+let timerMorto = 0;
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -206,7 +208,7 @@ document.addEventListener("pointerdown", (e) =>{ //prende il click come input
 
 // salto con spazio
 document.addEventListener("keydown", function(e) {
-    if (e.code === "Space"&& !pausa && !gameOver) {
+    if (e.code === "Space"&& !pausa && !gameOver && !morto) {
         uccellino.velocità = uccellino.salto;
     }
 });
@@ -231,6 +233,9 @@ restart.forEach(btn => {
         nuvole_grandi = [];
         gameOver = false;
         menu.classList.add("nascosto");
+        morto = false;
+        timerMorto = 0;
+        uccellino.x = 50;
 
         const gameover1 = document.getElementById("gameover")
         if(gameover1){
@@ -309,7 +314,7 @@ function disegna_nome(){
     disegno.textBaseline = "middle";
     disegno.fillStyle = "white";
     disegno.font = "20px Arial";
-    disegno.fillText("Nome utente: " + nomeGiocatore, x + w / 2, y + h / 2);
+    disegno.fillText("Utente: " + nomeGiocatore, x + w / 2, y + h / 2);
 }
 
 //record
@@ -375,17 +380,38 @@ function gameLoop() {
         }
     
     aggiornamento_nuvole_grandi();
-    aggiornamento_uccellino();
-    aggiornamento_tubi();
-   
+    
+    if (!morto) {
+        aggiornamento_uccellino();
+    }else{
+        timerMorto++;
+
+        uccellino.velocità += 0.4;
+        uccellino.y += uccellino.velocità;
+
+        if (timerMorto > 100) {
+
+        gameOver = true;
+        morto = false;
+        timerMorto = 0;
+
+        erba.style.display = "none";
+        document.getElementById("gameover").classList.remove("nascosto");
+        document.getElementById("punteggio").innerText = "Punteggio " + punteggio;
+        document.getElementById("record").innerText = "Record " + record;
+    }
+}
+    
+    if(!morto){
+        aggiornamento_tubi();
+    }
+
     for (let tubo of tubi) {
-        if (collisioni(uccellino, tubo)) {
-            gameOver = true;
+        if (collisioni(uccellino, tubo) && !morto) {
+            morto = true;
             
-            erba.style.display = "none";
-            document.getElementById("gameover").classList.remove("nascosto");
-            document.getElementById("punteggio").innerText = "Punteggio " + punteggio;
-            document.getElementById("record").innerText = "Record " + record;
+            uccellino.x -= 35;
+            uccellino.velocità = 5;
             
             if(punteggio > record){
                 record = punteggio;
