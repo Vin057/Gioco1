@@ -12,7 +12,7 @@ const erba = document.getElementById("erba");
 
 let spriteUccellino = new Image();
 spriteUccellino.src = "img/Sprites_Uccellino3.png";
-// uccellino
+
 let uccellino = {
     x: 50,
     y: 150,
@@ -21,6 +21,7 @@ let uccellino = {
     gravità: 0.5,
     salto: -7.7,
     velocità: 0,
+    velocitàX: 0,
     spriteWidth: 85, // dimendioni di grafica
     spriteHeight: 85, // dimendioni di grafica
     offsetX: 16,
@@ -236,7 +237,8 @@ restart.forEach(btn => {
         morto = false;
         timerMorto = 0;
         uccellino.x = 50;
-
+        uccellino.velocitàX = 0;
+        
         const gameover1 = document.getElementById("gameover")
         if(gameover1){
             gameover1.classList.add("nascosto");
@@ -388,7 +390,7 @@ function gameLoop() {
 
         uccellino.velocità += 0.4;
         uccellino.y += uccellino.velocità;
-
+        uccellino.x += uccellino.velocitàX;
         if (timerMorto > 100) {
 
         gameOver = true;
@@ -410,7 +412,7 @@ function gameLoop() {
         if (collisioni(uccellino, tubo) && !morto) {
             morto = true;
             
-            uccellino.x -= 35;
+            uccellino.velocitàX -= 2;
             uccellino.velocità = 5;
             
             if(punteggio > record){
