@@ -12,6 +12,11 @@ body {
     overflow: hidden;
 }
 
+html, body {
+    touch-action: none; /*serve a bloccare lo zoom se si clicca da un dispositivo mobile */
+    overscroll-behavior: none;
+}
+
 #benvenuto {
     color: yellow;
     text-align: center;

@@ -238,7 +238,7 @@ restart.forEach(btn => {
         timerMorto = 0;
         uccellino.x = 50;
         uccellino.velocitàX = 0;
-        
+
         const gameover1 = document.getElementById("gameover")
         if(gameover1){
             gameover1.classList.add("nascosto");
