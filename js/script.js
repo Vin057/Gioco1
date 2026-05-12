@@ -140,11 +140,10 @@ function aggiornamento_tubi() {
         }
     });
 
-    // rimuove tubi fuori schermo
-    tubi = tubi.filter(tubo => tubo.x + tubo.width > 0);
+    tubi = tubi.filter(tubo => tubo.x + tubo.width > 0); // rimuove i tubi quando escono dal canvas
 }
 
-//funzione per creare nuvole grandi
+//funzione per  le nuvole
 function creazione_nuvole_grandi(){
     nuvole_grandi.push({
         x: canvas.width + 50,
@@ -153,21 +152,20 @@ function creazione_nuvole_grandi(){
     });
 }
 
-//funzione per il movimento delle nuvole grandi
+//funzione per controllare il movimento delle nuvole
 function aggiornamento_nuvole_grandi(){
     nuvole_grandi.forEach(nuvola => {
         nuvola.x -= nuvola.velocità;
     });
 
-    // rimuove quando escono dal canvas
     nuvole_grandi = nuvole_grandi.filter(nuvola => {
-        let fuoriCanvas = nuvola.x + 100 < 0;
+        let fuoriCanvas = nuvola.x + 100 < 0;   // rimuove le nuvole quando escono dal canvas
 
         return !fuoriCanvas;
     });
 }
 
-//funzione per disegnare le nuvole grandi 
+//funzione per disegnare le nuvole
 function disegno_nuvola_grande(x, y, scala = 1.5) {
     disegno.save();
 
@@ -199,6 +197,7 @@ function disegna_nuvole_grande(){
 function salto(){
     uccellino.velocità = uccellino.salto;
 }
+
 //mobile
 document.addEventListener("pointerdown", (e) =>{ //prende il click come input
     if (!giocoAvviato) return;
@@ -368,16 +367,14 @@ function gameLoop() {
             timer_riprendi = 0;
         }
         uccellino.velocità = 0;
-      }else{
+        }else{
             frame++;
             
-        // crea un nuovo tubo in base ai frame
-        if (frame % 100 === 0) {
+        if (frame % 100 === 0) { // crea un nuovo tubo in base ai frame
             creazione_tubi();
             }
         
-        // crea una nuvola in base ai frame
-         if(frame % 240 === 0){
+         if(frame % 240 === 0){ // crea una nuvola in base ai frame
             creazione_nuvole_grandi();
         }
     
