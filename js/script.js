@@ -48,6 +48,7 @@ let nomeGiocatore = "";
 let giocoAvviato = false;
 let morto = false;
 let timerMorto = 0;
+let nome_gioco = "FlappyBird";
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -67,7 +68,7 @@ function aggiornamento_uccellino() {
     uccellino.y += uccellino.velocità;
 
      // limite in basso
-    if (uccellino.y + uccellino.height > canvas.height - margine_fondo) {
+    if (morto === false && uccellino.y + uccellino.height > canvas.height - margine_fondo) {
         uccellino.y = canvas.height - margine_fondo - uccellino.height;
         uccellino.velocità = 0;
     }
@@ -273,7 +274,6 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
-
 //collisioni
 function collisioni(uccellino, tubo) {
 
@@ -335,6 +335,56 @@ function disegna_record(){
     disegno.fillText("Record: " + record, x + w / 2, y + h / 2);
 }
 
+function disegna_punteggio(){
+    let x = 70;
+    let y = 20;
+    let w = 170;
+    let h = 35;
+    
+    disegno.fillStyle = "rgba(0, 0, 0, 0.3)";
+    disegno.fillRect(x, y, w, h);
+
+    disegno.textAlign ="center";
+    disegno.textBaseline = "middle";
+    disegno.fillStyle = "white";
+    disegno.font = "20px Arial";
+    disegno.fillText("Punteggio: " + punteggio, x + w / 2, y + h / 2);
+}
+
+function disegna_conto_alla_rovescia(){
+    disegno.fillStyle = "rgba(0, 0, 0, 0.2)";
+    disegno.fillRect(0, 0, canvas.width, canvas.height);
+        
+    disegno.fillStyle = "white";
+    disegno.font = "50px Arial";
+    disegno.textAlign = "center";
+       
+    if(riprendere_gioco === 3){
+        disegno.fillStyle="white";
+    }if(riprendere_gioco === 2){
+        disegno.fillStyle="orange";
+    }if(riprendere_gioco === 1){
+        disegno.fillStyle="red";
+    }
+    disegno.fillText("Il gioco riprende tra... " + riprendere_gioco, canvas.width / 2, canvas.height / 2);
+}
+
+function dati(){
+    const parametri = {
+        nomeGioco: nome_gioco,
+        Giocatore: nomeGiocatore,
+        Punteggio: punteggio
+    };
+
+    const url = new URL("https://arcade3d.vercel.app/html/assegna-punti.html?");
+    url.search = new URLSearchParams(parametri).toString();
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Errore: ', error));
+    }
+
 //funziona che fa partire il game
 function gameLoop() {
     disegno.clearRect(0, 0, canvas.width, canvas.height);
@@ -367,109 +417,79 @@ function gameLoop() {
             timer_riprendi = 0;
         }
         uccellino.velocità = 0;
-        }else{
+        }
+        else{
             frame++;
             
-        if (frame % 100 === 0) { // crea un nuovo tubo in base ai frame
-            creazione_tubi();
+            if(frame % 100 === 0) { // crea un nuovo tubo in base ai frame
+                creazione_tubi();
             }
         
-         if(frame % 240 === 0){ // crea una nuvola in base ai frame
-            creazione_nuvole_grandi();
+            if(frame % 240 === 0){ // crea una nuvola in base ai frame
+                creazione_nuvole_grandi();
+            }
+    
+            aggiornamento_nuvole_grandi();
+            aggiornamento_tubi();
+            aggiornamento_uccellino();
         }
     
-    aggiornamento_nuvole_grandi();
-    
-    if (!morto) {
-        aggiornamento_uccellino();
-    }else{
-        timerMorto++;
-
-        uccellino.velocità += 0.4;
-        uccellino.y += uccellino.velocità;
-        uccellino.x += uccellino.velocitàX;
-        if (timerMorto > 100) {
-
-        gameOver = true;
-        morto = false;
-        timerMorto = 0;
-
-        erba.style.display = "none";
-        document.getElementById("gameover").classList.remove("nascosto");
-        document.getElementById("punteggio").innerText = "Punteggio " + punteggio;
-        document.getElementById("record").innerText = "Record " + record;
-    }
-}
-    
-    if(!morto){
-        aggiornamento_tubi();
-    }
-
-    for (let tubo of tubi) {
-        if (collisioni(uccellino, tubo) && !morto) {
-            morto = true;
-            
-            uccellino.velocitàX -= 2;
-            uccellino.velocità = 5;
-            
-            if(punteggio > record){
-                record = punteggio;
-                localStorage.setItem("record", record);
-            }
-            }
-        }
-    }
-
     disegna_nuvole_grande();
+    disegna_tubi();
+    disegna_punteggio();
+    disegna_record();
+    disegna_nome();
     disegna_uccellino();
     
-/*  
+    /*  
     disegno.strokeStyle = "red";
     disegno.strokeRect(
     uccellino.x,                      //  HITBOX UCCELLINO
     uccellino.y,
     uccellino.width,
     uccellino.height
-);
+    );
     */
-    disegna_tubi();
-
-    // punteggio
-    let x = 70;
-    let y = 20;
-    let w = 170;
-    let h = 35;
     
-    disegno.fillStyle = "rgba(0, 0, 0, 0.3)";
-    disegno.fillRect(x, y, w, h);
-
-    disegno.textAlign ="center";
-    disegno.textBaseline = "middle";
-    disegno.fillStyle = "white";
-    disegno.font = "20px Arial";
-    disegno.fillText("Punteggio: " + punteggio, x + w / 2, y + h / 2);
-
-    disegna_record();
-    disegna_nome();
-
-    if(conto_alla_rovescia){
-        disegno.fillStyle = "rgba(0, 0, 0, 0.2)";
-        disegno.fillRect(0, 0, canvas.width, canvas.height);
-        
-        disegno.fillStyle = "white";
-        disegno.font = "50px Arial";
-        disegno.textAlign = "center";
-       
-        if(riprendere_gioco === 3){
-            disegno.fillStyle="white";
-        }if(riprendere_gioco === 2){
-            disegno.fillStyle="orange";
-        }if(riprendere_gioco === 1){
-            disegno.fillStyle="red";
-        }
-        disegno.fillText("Il gioco riprende tra... " + riprendere_gioco, canvas.width / 2, canvas.height / 2);
+    if(conto_alla_rovescia === true){
+        disegna_conto_alla_rovescia();
     }
+
+    for (let tubo of tubi) {
+        if (collisioni(uccellino, tubo) && !morto) {
+            morto = true;
+            
+            uccellino.velocitàX = -3.5;
+            uccellino.velocità = -5;
+            
+            if(punteggio > record){
+                record = punteggio;
+                localStorage.setItem("record", record);
+            }
+        }
+    }
+
     
+    if(morto === true){
+        timerMorto++;
+
+        uccellino.velocità += 0.2;
+        uccellino.y += uccellino.velocità;
+        uccellino.x += uccellino.velocitàX;
+        if (timerMorto > 100) {
+
+            gameOver = true;
+            morto = false;
+            timerMorto = 0;
+            
+            dati();
+            erba.style.display = "none";
+            document.getElementById("gameover").classList.remove("nascosto");
+            document.getElementById("punteggio").innerText = "Punteggio " + punteggio;
+            document.getElementById("record").innerText = "Record " + record;
+        }
+    }
+
     requestAnimationFrame(gameLoop);
 }
 
