@@ -128,6 +128,7 @@ function disegna_tubi() {
 
 function aggiornamento_tubi() {
     tubi.forEach(tubo => {
+        // var vel=2+(punteggio:15)
         tubo.x -= 2; // velocità di spostamento dei tubi
     
         if(!tubo.passaggio && tubo.x + tubo.width < uccellino.x){
