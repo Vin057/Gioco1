@@ -370,29 +370,36 @@ function disegna_conto_alla_rovescia(){
     disegno.fillText("Il gioco riprende tra... " + riprendere_gioco, canvas.width / 2, canvas.height / 2);
 }
 
-function dati(){
-    const parametri = {
-        nomeGioco: nome_gioco,
-        Giocatore: nomeGiocatore,
-        Punteggio: punteggio
-    };
+function dati() {
+  // Prepariamo i parametri con le chiavi esatte che l'API si aspetta nell'URL
+  const parametri = {
+    nomeGioco: nome_gioco,
+    nomeSquadra: nomeGiocatore, // L'API accetta sia nomeSquadra che Giocatore
+    punteggio: punteggio
+  };
 
-    const url = new URL("https://arcade3d.vercel.app/html/assegna-punti.html?");
-    url.search = new URLSearchParams(parametri).toString();
+  const url = new URL("https://arcade3d.vercel.app/api/assegna-punti");
+  url.search = new URLSearchParams(parametri).toString();
 
-    fetch(url)
-        // Se la risposta non è OK, stampa lo status (es. 404, 500)
-        .then(response => {
-            if (!response.ok) {
-            console.error("Il server ha salvato con errore:", response.status);
-            }
-            else {
-                console.log("Il server ha salvato con successo:", reponse.text);
-            }
-        })
-        .then(data => console.log(data))
-        .catch(error => console.error('Errore: ', error));
-    }
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Errore HTTP del Server: ${response.status}`);
+      }
+      return response.json(); // Ora convertiamo in vero JSON!
+    })
+    .then(data => {
+      console.log("Risposta ricevuta da Vercel API:", data);
+      if (data.success) {
+        console.log("Scrittura sul DB completata con successo!");
+      } else {
+        console.error("L'API ha risposto con un errore:", data.error);
+      }
+    })
+    .catch(error => {
+      console.error('Errore durante la chiamata di salvataggio:', error);
+    });
+}
 
 //funziona che fa partire il game
 function gameLoop() {
