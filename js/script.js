@@ -380,7 +380,15 @@ function dati(){
     url.search = new URLSearchParams(parametri).toString();
 
     fetch(url)
-        .then(response => response.json())
+        // Se la risposta non è OK, stampa lo status (es. 404, 500)
+        .then(response => {
+            if (!response.ok) {
+            console.error("Il server ha salvato con errore:", response.status);
+            }
+            else {
+                console.log("Il server ha salvato con successo");
+            }
+        })
         .then(data => console.log(data))
         .catch(error => console.error('Errore: ', error));
     }
