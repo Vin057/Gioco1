@@ -387,7 +387,7 @@ function dati(){
             console.error("Il server ha salvato con errore:", response.status);
             }
             else {
-                console.log("Il server ha salvato con successo");
+                console.log("Il server ha salvato con successo:", reponse.text);
             }
         })
         .then(data => console.log(data))
