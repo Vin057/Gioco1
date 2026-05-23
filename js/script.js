@@ -50,6 +50,7 @@ let morto = false;
 let timerMorto = 0;
 let nome_gioco = "FlappyBird";
 let velocità_iniziale = 2;
+let spawn_tubi = 100;
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -125,6 +126,17 @@ function disegna_tubi() {
             tubo.tubo_inferiore
         );
     });
+}
+
+function aggiorna_spawn(){
+    if(punteggio < 15){
+        spawn_tubi = 100;
+    }
+    else if(punteggio < 45){
+        spawn_tubi = 110;
+    }else{
+        spawn_tubi = 120;
+    }
 }
 
 function aggiornamento_tubi() {
@@ -222,6 +234,7 @@ continua.onclick = () => {
     timer_riprendi = 0;
     pausa = false;
     menu.classList.add("nascosto");
+    erba.style.display = "block";
 };
 
 restart.forEach(btn => {
@@ -270,6 +283,7 @@ document.addEventListener("keydown", function(e) {
 
         if (pausa) {
             menu.classList.remove("nascosto");
+            erba.style.display = "none";
         } else {
             menu.classList.add("nascosto");
         }
@@ -438,14 +452,15 @@ function gameLoop() {
         else{
             frame++;
             
-            if(frame % 100 === 0) { // crea un nuovo tubo in base ai frame
+            aggiorna_spawn();
+            if(frame % spawn_tubi === 0) { //crea un tubo in base al valore che cambia dal punteggio 
                 creazione_tubi();
             }
         
             if(frame % 240 === 0){ // crea una nuvola in base ai frame
                 creazione_nuvole_grandi();
             }
-    
+            
             aggiornamento_nuvole_grandi();
             aggiornamento_tubi();
             aggiornamento_uccellino();
