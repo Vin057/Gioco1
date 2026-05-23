@@ -49,6 +49,7 @@ let giocoAvviato = false;
 let morto = false;
 let timerMorto = 0;
 let nome_gioco = "FlappyBird";
+let velocità_iniziale = 2;
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -128,8 +129,8 @@ function disegna_tubi() {
 
 function aggiornamento_tubi() {
     tubi.forEach(tubo => {
-        // var vel=2+(punteggio:15)
-        tubo.x -= 2; // velocità di spostamento dei tubi
+        let velocità_tubi = velocità_iniziale + Math.floor(punteggio / 15); //ogni 15 aumenta di 1
+        tubo.x -= velocità_tubi; // velocità di spostamento dei tubi
     
         if(!tubo.passaggio && tubo.x + tubo.width < uccellino.x){
             punteggio ++; //se la "x" dell'uccellino supera la larghezza del tubo punteggio + 1
