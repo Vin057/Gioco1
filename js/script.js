@@ -141,7 +141,7 @@ function aggiorna_spawn(){
         spawn_tubi = 80;
     }
 
-    if ((punteggio === 15 || punteggio === 45) && punteggio !== mostrare_messaggio) {
+    if (punteggio > 0 && punteggio % 15 === 0 && punteggio !== mostrare_messaggio) {
 
         timerMessaggio = 120;
         mostrare_messaggio = punteggio;
