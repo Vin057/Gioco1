@@ -51,6 +51,9 @@ let timerMorto = 0;
 let nome_gioco = "FlappyBird";
 let velocità_iniziale = 2;
 let spawn_tubi = 100;
+let messaggio = "Velocità aumentata";
+let timerMessaggio = 0;
+let mostrare_messaggio = 0;
 
 // andiamo a definire la funzione che mostrerà l'uccellino a schermo 
 function disegna_uccellino() {
@@ -137,13 +140,19 @@ function aggiorna_spawn(){
     }else{
         spawn_tubi = 80;
     }
+
+    if ((punteggio === 15 || punteggio === 45) && punteggio !== mostrare_messaggio) {
+
+        timerMessaggio = 120;
+        mostrare_messaggio = punteggio;
+    }
 }
 
 function aggiornamento_tubi() {
     tubi.forEach(tubo => {
         let velocità_tubi = velocità_iniziale + Math.floor(punteggio / 15); //ogni 15 aumenta di 1
         tubo.x -= velocità_tubi; // velocità di spostamento dei tubi
-    
+
         if(!tubo.passaggio && tubo.x + tubo.width < uccellino.x){
             punteggio ++; //se la "x" dell'uccellino supera la larghezza del tubo punteggio + 1
             tubo.passaggio = true;
@@ -385,6 +394,17 @@ function disegna_conto_alla_rovescia(){
     disegno.fillText("Il gioco riprende tra... " + riprendere_gioco, canvas.width / 2, canvas.height / 2);
 }
 
+function disegna_messaggio(){
+    if (timerMessaggio > 0) {
+        disegno.fillStyle = "black";
+        disegno.font = "30px Arial";
+        disegno.textAlign = "center";
+
+        disegno.fillText(messaggio,canvas.width / 2,100);
+        timerMessaggio--;
+    }
+}
+
 function dati() {
   // Prepariamo i parametri con le chiavi esatte che l'API si aspetta nell'URL
   const parametri = {
@@ -434,6 +454,10 @@ function gameLoop() {
         return;
     }
 
+    if(timerMessaggio > 0){
+        disegna_messaggio();
+    }
+
     if(conto_alla_rovescia){
       
        timer_riprendi ++;
@@ -465,6 +489,7 @@ function gameLoop() {
             aggiornamento_tubi();
             aggiornamento_uccellino();
         }
+    
     
     disegna_nuvole_grande();
     disegna_tubi();
