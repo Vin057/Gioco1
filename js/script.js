@@ -133,9 +133,9 @@ function aggiorna_spawn(){
         spawn_tubi = 100;
     }
     else if(punteggio < 45){
-        spawn_tubi = 110;
+        spawn_tubi = 90;
     }else{
-        spawn_tubi = 120;
+        spawn_tubi = 80;
     }
 }
 
