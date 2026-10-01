@@ -1,5 +1,5 @@
-const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo "sfondo" 
-const disegno = canvas.getContext("2d"); //andiamo a dichiarare la modaità per "disegnarer"
+const canvas = document.getElementById("gameCanvas"); // andiamo a dichiare lo sfondo 
+const disegno = canvas.getContext("2d"); //andiamo a dichiarare la modaità per disegnarer
 const pausa1 = document.getElementById("pausa");
 const menu = document.getElementById("menu"); 
 const continua = document.querySelector(".continua"); //document.querySelector serve per prendere un elemento da html
@@ -132,14 +132,7 @@ function disegna_tubi() {
 }
 
 function aggiorna_spawn(){
-    if(punteggio < 15){
-        spawn_tubi = 100;
-    }
-    else if(punteggio < 45){
-        spawn_tubi = 90;
-    }else{
-        spawn_tubi = 80;
-    }
+    spawn_tubi = Math.max(60, 100 - Math.floor(punteggio / 15) * 10);
 
     if (punteggio > 0 && punteggio % 15 === 0 && punteggio !== mostrare_messaggio) {
 
@@ -407,34 +400,41 @@ function disegna_messaggio(){
 
 function dati() {
   // Prepariamo i parametri con le chiavi esatte che l'API si aspetta nell'URL
-  const parametri = {
-    nomeGioco: nome_gioco,
-    nomeSquadra: nomeGiocatore, // L'API accetta sia nomeSquadra che Giocatore
-    punteggio: punteggio
-  };
+    const parametri = {
+        nomeGioco: nome_gioco,
+        nomeSquadra: nomeGiocatore, // L'API accetta sia nomeSquadra che Giocatore
+        punteggio: punteggio
+    };
 
-  const url = new URL("https://arcade3d.vercel.app/api/assegna-punti");
-  url.search = new URLSearchParams(parametri).toString();
+    const url = new URL("https://arcade3d.vercel.app/api/assegna-punti"); //creazione URL API
+    // ovvero l'inidirizzo a cui andremo ad inviare i dati, ovvero i parametri
+    url.search = new URLSearchParams(parametri).toString(); // uniamo parametri e URL
+    //Esempio: ?nomeGioco=FlappyBird%nomeSquadra=Luca&punteggio=20
 
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Errore HTTP del Server: ${response.status}`);
-      }
-      return response.json(); // Ora convertiamo in vero JSON!
-    })
-    .then(data => {
-      console.log("Risposta ricevuta da Vercel API:", data);
-      if (data.success) {
-        console.log("Scrittura sul DB completata con successo!");
-      } else {
-        console.error("L'API ha risposto con un errore:", data.error);
-      }
-    })
-    .catch(error => {
-      console.error('Errore durante la chiamata di salvataggio:', error);
-    });
-}
+    //invio della richiesta al server
+    fetch(url)
+        //andiamo a verificare la risposta
+        .then(response => {
+        if (!response.ok) {
+            throw new Error(`Errore HTTP del Server: ${response.status}`);
+        //se la risposta è negativa quindi false abbiamo un errore 
+        }
+        //altrimenti
+        return response.json(); // conversione della risposta in un vero oggetto JSON (javascript)
+        })
+        .then(data => {
+        console.log("Risposta ricevuta da Vercel API:", data); //mostra in console la risposta del server
+        if (data.success) {
+            console.log("Scrittura sul DB completata con successo!");
+        } else {
+            console.error("L'API ha risposto con un errore:", data.error);//altrimenti ci avverte con un errore
+        }
+        })
+        .catch(error => {
+            console.error('Errore durante la chiamata di salvataggio:', error);
+            //gestisce eventuali errori di server offline o problemi rete
+        });
+    }
 
 //funziona che fa partire il game
 function gameLoop() {
